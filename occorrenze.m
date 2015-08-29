@@ -28,6 +28,8 @@ sigma2=2.4240684055477e-05;
 %l'ultimo valore comprende TUTTE le perturbazioni superiori 
 contatore=zeros(1,21);
 contatore2=zeros(1,21);
+contatore3=zeros(1,41);
+contatore4=zeros(1,41);
 %si cercano le coordinate sferiche theta e phi dei rho
 rho_hat2=cartesiantopolar(rho_hat);
 
@@ -38,8 +40,8 @@ rho_hat2=cartesiantopolar(rho_hat);
    %matrice di perturbazione 
    rho_hat3=rho_hat2+pert;
    rho_hat4=polartocartesian(rho_hat3);
-   [rho_est, r_est, err_jn, psi]=Jn(rho_moduli, R, rho_hat4, r(:,2), maxit, deltat);
-   [rho_est2,r_est2,err_dc]=dc(rho_hat4, R, r(:,2), deltat, maxit);
+   [rho_est, r_est, err_jn(i), psi]=Jn(rho_moduli, R, rho_hat4, r(:,2), maxit, deltat);
+   [rho_est2,r_est2,err_dc(i)]=dc(rho_hat4, R, r(:,2), deltat, maxit);
    % calcolo l'altro errore
    a=sqrt(r_est(:,2)'*r_est(:,2));
    a2=sqrt(r_est2(:,2)'*r_est2(:,2));
@@ -47,21 +49,22 @@ rho_hat2=cartesiantopolar(rho_hat);
    errore2(i)=100*(a2-sqrt(r(:,2)'*r(:,2)))/(sqrt(r(:,2)'*r(:,2)));
    k=round(errore(i)/0.01);
    k2=round(errore2(i)/0.01);
-  
+   k3=round(err_jn(i)/0.01);
+   k4=round(err_dc(i)/0.01);
       if (abs(k)<=10)
         contatore(10+k+1)=contatore(10+k+1)+1;
    
-   end
+     end
      if (abs(k2)<=10)
         contatore2(10+k+1)=contatore2(10+k+1)+1;
    
-   end
+     end
+
+   
+     contatore3(k3+1)=contatore3(k3+1)+1;
+     contatore4(k4+1)=contatore4(k4+1)+1;
+   
+   
 end
 
-%else
-   %  contatore(201)=contatore(201)+1;
-   %end
-   %if (k2<20)
-   %  contatore2(k2)=contatore2(k2)+1;
-   %else
-   %  contatore2(201)=contatore2(201)+1;
+
