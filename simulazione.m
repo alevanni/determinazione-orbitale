@@ -14,15 +14,15 @@ sigmas=2.4240684055477e-05;
 cont=1;
 for deltats=20:5:120
     deltats;
-    [t,sol1]=ode45(@tb, [0; deltat], r0 );
-    [t,sol2]=ode45(@tb, [0; 2*deltat], r0 );
+    [t,sol1]=ode45(@tb, [0; deltats], r0 );
+    [t,sol2]=ode45(@tb, [0; 2*deltats], r0 );
     %il sistema e' in dimensione 6, si staccano gli elementi che ci interessano
     r_trues(:,1)=[r0(1); r0(3); r0(5)]; 
     r_trues(:,2)=[sol1(size(sol1,1),1); sol1(size(sol1,1),3); sol1(size(sol1,1),5)];
     r_trues(:,3)=[sol2(size(sol2,1),1); sol2(size(sol2,1),3); sol2(size(sol2,1),5)];
     %adesso ho le posizioni iniziali esatte
     %si cercano i rho esatti (vettori)
-    rho_trues=r-R; 
+    rho_trues=r_trues-R; 
     
     for i=1:3
       %ora se ne cercano i moduli
@@ -43,8 +43,8 @@ for deltats=20:5:120
      %torno in coordinate cartesiane
      rho_hat4s=polartocartesian(rho_hat3s); %si trovano i rho_hat perturbati
 
-     [rho_ests, r_ests, err_jns(cont), ejn, psis]=Jn(rho_ms, R, rho_hat4s, r_trues(:,2), maxit, deltat);
-     [rho_est2s,r_est2s,err_dcs(cont)]=dc(rho_hat4s, R, r_trues(:,2), deltat, maxit);
+     [rho_ests, r_ests, err_jns(cont), psis]=Jn(rho_ms, R, rho_hat4s, r_trues(:,2), maxit, deltats);
+     [rho_est2s,r_est2s,err_dcs(cont)]=dc(rho_hat4s, R, r_trues(:,2), deltats, maxit);
 
 
      cont=cont+1;
