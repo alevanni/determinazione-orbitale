@@ -1,0 +1,335 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\mode<presentation>
+{
+  %\usetheme{default}
+  %\usetheme{Boadilla}
+  %\usetheme{Singapore}
+  \usetheme{Warsaw}
+  %\usetheme{Darmstadt}
+  %\usetheme{Malmoe}
+  %\usetheme{CambridgeUS}
+  %\usefonttheme{serif}
+  %\usecolortheme{wolverine}
+  %\usecolortheme{beaver}
+  %\setbeamercovered{transparent}
+}
+
+\usepackage{lmodern}
+\usefonttheme{structurebold}
+%\usefonttheme[onlymath]{serif}
+\usefonttheme{professionalfonts}
+%\setbeamerfont{vpiccolo}{size=\tiny}
+%\setbeamercolor{background canvas}{bg=cyan} 
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\setbeamertemplate{footline}[page number]
+\usepackage{color}
+\definecolor{red}{rgb}{1,0,0} % color values Red, Green, Blue
+\definecolor{green}{rgb}{0,1,0}
+\definecolor{blue}{rgb}{0,0,1} % color values Red, Green, Blue
+\definecolor{MyDarkBlue}{rgb}{0.1,0,0.55}
+
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{graphicx}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\def\N{\mathbb{N}}
+\def\Z{\mathbb{Z}}
+\def\Q{\mathbb{Q}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\title[]{\bf Seminario di Determinazione Orbitale}
+
+\author[Alessia Vanni]{\textcolor{MyDarkBlue}{\bf \large Alessia Vanni} }
+    
+%\titlegraphic{\includegraphics[width=20mm]{putto}}
+
+\date{10/03/15}
+
+\small
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+%%%%%%%%%%%%
+\begin{frame}[plain]
+\tableofcontents
+\end{frame}
+%%%%%%%%%%%%%%%
+\section{Introduzione al problema.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+Consideriamo il seguente sistema, composto dalla Terra, dal Sole e da un corpo in orbita intorno alla Terra. 
+\vskip 0.5cm
+%\begin{minipage}{.30\textwidth}
+%\centering
+%\includegraphics[ width=2cm, height=3cm ]{figura.png}
+%\end{minipage}%
+%\begin{minipage}{.70\textwidth}
+\textbf{Dati iniziali}
+\begin{itemize}
+\item $n$ istanti $t_1, \dots, t_n$ .
+\item $n$ vettori $\textbf{R}_k$ che rappresentano le posizioni dell'osservatore rispetto al Sole.
+\item $n$ versori $ \hat{\mathbf{\rho}}_1, \dots, \hat{ \rho }_n$, osservati ai tempi $t_1, \dots, t_n$, che indicano la posizione del corpo rispetto alla Terra.
+\end{itemize}
+
+
+%\end{minipage}
+\vskip 0.5cm
+Indicheremo inoltre con $\textbf{r}_k$ le posizioni del corpo rispetto al centro della Terra.
+Lo scopo degli algoritmi presentati \`e quello di trovare le distanze topocentriche $\mathbf \rho_k$. 
+
+
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+I tre vettori soddisfano la relazione
+ \begin{equation}
+\textbf{r}_k=\textbf{R}_k+ \rho_k \hat{rho}_k, \quad k=1,\dots, n.
+\end{equation}
+Inoltre, dal momento che l'orbita del corpo giace su un piano \begin{equation}
+\textbf{r}_k=c_k \textbf{r}_{k-1} + \textbf{r}_{k+1} \quad k=1,\dots, n
+\end{equation}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+I coefficienti $c_k$ e $d_k$ possono essere ottenuti utilizzando le serie di Lagrange $f$ e $g$ per esprimere i vettori $\textbf{r}_{k-1}$ e $r_{k+1}$:
+\begin{equation}
+\begin{cases}
+\textbf{r}_{k-1}=f_{k-1}\textbf{r}_k+g_{k-1}\textbf{v}_k \\
+\textbf{r}_{k+1}=f_{k+1}\textbf{r}_k+g_{k+1}\textbf{v}_k
+\end{cases}
+\end{equation}
+Questa equazione ci permette di eliminare il vettore velocit\`a $\textbf{v}_k$.
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+Eliminando il vettore $\textbf{v}_k$ otteniamo la relazione che lega $\textbf{r}_k$ agli altri due:  \begin{equation}
+\textbf{r}_k=\frac{g_{k+1}}{f_{k-1} g_{k+1}-f_{k+1} g_{k-1}} \textbf{r}_{k-1}- \frac{g_{k-1}}{f_{k-1} g_{k+1} - f_{k_1} g_{k-1}} \textbf{r}_{k+1}
+\end{equation}
+e quindi i coefficienti $c_k$ e $d_k$, $k=2,..., n-1$
+\begin{equation}
+c_k=\frac{g_{k+1}}{f_{k-1}g_{k+1}-f_{k+1}g_{k-1}} \qquad d_k=-\frac{g_{k-1}}{f_{k-1}g_{k+1}-f_{k+1}g_{k-1}}
+\end{equation}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+I coefficienti $f_k$ e $g_k$ possono essere espansi in serie di Taylor fino al quarto ordine \begin{equation*}
+\begin{cases}
+f_{k-1} \approx 1-\frac{\mu}{2 r_k^3}\Delta t^2_k - \frac{\mu(\textbf{r}_k \cdot \textbf{v}_k)}{2 r_k^5} \Delta t^3_k + \frac{\mu}{24}[-2\frac{\mu}{r_k^6} + 3 \frac{v_k^2}{r_k^5} - 15 \frac{\textbf{r}_k \cdot \textbf{v}_k)}{r_k}]\Delta t ^4_k \\
+f_{k+1}\approx 1-\frac{\mu}{2 r_k^3}\Delta t^2_k - \frac{\mu(\textbf{r}_k \cdot \textbf{v}_k)}{2 r_k^5} \Delta t^3_k + \frac{\mu}{24}[-2\frac{\mu}{r_k^6} + 3 \frac{v_k^2}{r_k^5} - 15 \frac{\textbf{r}_k \cdot \textbf{v}_k)}{r_k}]\Delta t ^4_k\\
+g_{k-1} \approx 1-\frac{\mu}{2 r_k^3}\Delta t^2_k - \frac{\mu(\textbf{r}_k  \cdot \textbf{v}_k)}{2 r_k^5} \Delta t^3_k + \frac{\mu}{24}[-2\frac{\mu}{r_k^6} + 3 \frac{v_k^2}{r_k^5} - 15 \frac{\textbf{r}_k \cdot \textbf{v}_k)}{r_k}]\Delta t ^4_k\\
+g_{k+1} \approx 1-\frac{\mu}{2 r_k^3}\Delta t^2_k - \frac{\mu(\textbf{r}_k \cdot \textbf{v}_k)}{2 r_k^5} \Delta t^3_k + \frac{\mu}{24}[-2\frac{\mu}{r_k^6} + 3 \frac{v_k^2}{r_k^5} - 15 \frac{\textbf{r}_k \cdot \textbf{v}_k)}{r_k}]\Delta t ^4_k
+\end{cases}
+\end{equation*}
+e $\mu=398600.44 \quad km/s^2$ \`e il parametro gravitazionale della terra.
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Definizione del primo algoritmo}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+Iniziamo a definire il primo algoritmo per $n=3$ osservazioni. \\
+Per piccoli intervalli di tempo sono sufficienti i primi de termini dello sviluppo di $f$ e $g$. \\
+Inoltre se prendiamo $\Delta t$ costante \begin{equation}
+c_k=d_k=\frac{1}{2} \left(1+ \frac{\mu}{2r_k^3} \Delta t^2 \right)
+\end{equation} 
+Possiamo adesso definire la funzione a $\psi: \R^3 \longrightarrow \R^3$ come \begin{equation}
+\psi(\rho_1, \rho_2, \rho_3)=c_2(\textbf{R}_1+ \rho_1 \hat{\rho}_1)+d_2(\textbf{R}_3+ \rho_3 \hat{\rho}_3)-(\textbf{R}_2+ \rho_2 \hat{\rho}_2)
+\end{equation}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+La soluzione $(\rho_1, \rho_2, \rho_3)$ cercata dovr\`a quindi soddisfare l'equazione vettoriale \begin{equation}
+\psi(\rho_1^*, \rho_2^*, \rho_3^*)=\textbf{0}
+\end{equation} 
+e verr\`a cercata attraverso un metodo iterativo. \\
+Scrivendo lo sviluppo di Taylor della funzione $\psi$ fino al secondo ordine, otteniamo che
+\begin{equation}
+\psi_{i+1} \approx \psi_i + J_i (\rho_{i+1} - \rho_i) + \frac{1}{2} \Delta \rho_i^T H_i \Delta \rho_i
+\end{equation}
+dove $\psi_{k} = \psi(\rho_{k})$ 
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+E quindi il passo di iterazione \`e dato dalla formula \begin{equation}
+\rho_i+1=\rho_i - J_i [\psi_i + \frac{1}{2} (J_i^{-1} \psi_i)^T H_i (J_i^{-1}\psi_i)]
+\end{equation}
+Se i tre vettori di posizione $(\textbf{R}_1,\textbf{R}_2, \textbf{R}_3)$ giacciono sullo stesso piano dei versori $(\hat{\rho}_1, \hat{\rho}_2,\hat{\rho}_3)$ allora la condizione di coplanarit\`a data dalla relazione (inserisci) collassa in due equazioni. In questo caso, avendo tre incognite $(\rho_1,\rho_2,\rho_3)$, \`e necessaria una quarta osservazione.  
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+Questo metodo pu\`o essere facilmente esteso al caso in cui $n>3$. 
+In questo caso le relazioni di coplanarit\`a sono date dal sistema \begin{equation}
+\begin{cases}
+\textbf{r}_2=c_2 \textbf{r}_1 + d_2 \textbf{r}_3 \\
+\textbf{r}_3=c_3 \textbf{r}_3 + d_3 \textbf{r}_4 \\
+\quad \vdots \\
+\textbf{r}_{n-1}=c_{n-1} \textbf{r}_{n-2} + d_{n-2} \textbf{r}_n
+\end{cases}
+\end{equation}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+L'equazione che descrive i residui diventa quindi 
+\begin{equation}
+\begin{cases}
+\psi_1=c_2(\textbf{R}_1+\rho_1 \hat{\rho}_1) + d_2(\textbf{R}_3+\rho_3 \hat{\rho}_3)-(\textbf{R}_2+\rho_2 \hat{\rho}_2) \\
+\vdots \\
+\psi_{n-2}= c_{n-1} (\textbf{R}_{n-2}+\rho_{n-2} \hat{\rho}_{n-2}) + d_{n-1}(\textbf{R}_n+\rho_n \hat{rho}_n) \\ 
+  \qquad - (\textbf{R}_{n-1}+\rho_{n-1} \hat{\rho}_{n-1})
+\end{cases}
+\end{equation}
+Analogamente al caso precedente, gli zeri di questa equazione vengono calcolati con il metodo di Newton, con la differenza che la matrice Jacobiana ha dimensione $3(n-2) \times n$ e non \`e necessariamente quadrata. 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+Tralasciando le derivate di ordine superiore, l'iterazione diventa \begin{equation}
+\rho_{i+1}=\rho_i - [(J_i^T J_i)^{-1}J_i]\psi
+\end{equation}
+Il prossimo metodo che andremo a presentare non richiede la costruzione di alcuna derivata.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{guess_region.jpg}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Soluzione ai minimi quadrati}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\`E possibile riscrivere le condizioni di coplanarit\`a nella forma matriciale $M \rho =\xi$
+\begin{equation*}
+\begin{bmatrix}
+c_2 \hat{\rho}_1 & -\rho_2 & d_2 \hat{\rho}_3 & \mathbf{0} & \mathbf{0}  & \dots & \mathbf{0} \\
+\mathbf{0} & c_3 \hat{\rho}_2 & -\rho_3 & d_3 \hat{\rho}_4 & \mathbf{0} & \dots &  \mathbf{0} \\
+\mathbf{0} & \mathbf{0}  & c_4 \hat{\rho}_3 & -\rho_4 & d_4 \hat{\rho}_5 & \dots \mathbf{0} \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+\mathbf{0}  & \mathbf{0}  & \mathbf{0}  & \mathbf{0}  & \mathbf{0}  & \dots & d_{n-1} \hat{\rho}_{n}
+\end{bmatrix}
+\begin{bmatrix}
+\rho_1 \\
+\rho_2 \\
+\vdots \\
+\rho_n
+\end{bmatrix}=\begin{bmatrix}
+\xi_1\\
+\xi_2 \\
+\vdots \\
+\xi_n
+\end{bmatrix}
+\end{equation*}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+La soluzione ai minimi quadrati \`e data dalla formula \begin{equation}
+\Delta \rho = -(M^T M)^{-1} M^T \xi
+\end{equation}
+Per trovare il punto fisso della successione si proceder\`a quindi con il metodo delle \emph{correzioni differenziali} \begin{equation}
+\rho_{k+1}= (M^T M)^{-1} M^T \xi_k
+\end{equation}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Esempi e risultati}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+Per controllare l'esattezza e la stabilit\`a del metodo sono stati analizzati quattro diversi casi. \\
+In ognuno di essi il sito d'osservazione \`e posto a latitudine e longitudine nulle. I test sono stati eseguiti seguendo determinati passi: \begin{itemize}
+\item[a)] Sono stati selezionati gli elementi orbitali di un oggetto di tipo LEO. La selezione deve esssere cosistente con la posizione dell'osservatore;
+\item[b)] Dai dati selezionati vengono ottenuti i vettori posizione e velocit\`a iniziali;
+\item[c)] Velocit\`a e posizione iniziali vengono propagate nel tempo per ottenere le osservazioni seguenti;
+\item[d)] Si calcolano i versori $\hat{\rho}_k$;
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+Per simulare delle osservazioni reali i dati esatti sono stati sporcati con del rumore gaussiano.
+\end{frame}
+%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+L'algiritmo \`e stato testato in quattro diversi casi \begin{itemize}
+\item Satellite equatoriale
+\item Satellite con orbita inclinata di 45 gradi
+\item Satellite con orbita inclinata di 90
+\item Asteroide
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+Faremo adesso vedere che l'accuratezza dei risultati dipende principalmente da tre fattori: \begin{itemize}
+\item L'intervallo di tempo che separa le osservazioni;
+\item Gli errori di misurazione;
+\item Gli elementi orbitali;
+\end{itemize}
+I test sono stati eseguiti sul secondo caso. \\
+Per studiare l'effetto del rumore la varianza $\sigma$ \`e stata fatta variare da $0$ a $5''$.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+Per verificare l'influenza dell'intervallo di tempo \`e stato di nuovo considerato il secondo caso. La varianza del rumore \`e stata fissata a $\sigma=5''$ e l'intervallo di tempo \`e stato fatto variare da $20$ a $120s$.
+In figura si vede come l'incremento dell'intervallo di tempo aumenti l'accuratezza di entrambi i metodi fino ai $60s$. Ma per intervalli pi\`u lunghi $J_n$ risente dell'approssimazione dei coefficienti di Lagrange $f$ e $g$.
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{error_vs_time.jpg}
+\end{figure}
+\end{frame}
+%%%%%%%%%
+
+\begin{frame}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{error_vs_noise.jpg}
+La figura mostra che per dati molto accurati la soluzione trovata con l'algoritmo $L_n$ \`e molto precisa, mentre quella trovata con $J_n$ non lo \`e. 
+Al contrario, quando la varianza \`e superiore a $2''$ i due metodi hanno lo stesso livello di accuratezza.   
+\end{figure}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\begin{figure} 
+\centering
+\includegraphics[width=0.5\linewidth]{occorrenze_jn.jpg} 
+\includegraphics[width=0.5\linewidth]{occorrenze_dc.jpg} 
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\begin{figure} 
+\centering
+\includegraphics[width=0.5\linewidth]{occorrenze_positive_jn.jpg} 
+\includegraphics[width=0.5\linewidth]{occorrenze_positive_dc.jpg} 
+\end{figure}
+\end{frame}
+%\begin{frame}
+%Infine l'ultima figura mostra come cambia la performance di $J_n$ al variare delle %condizioni iniziali. \\
+%In questo caso l'intervallo di tempo rimane fisso a $50 s$. 
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.5\textwidth]{errore3.png}
+%\end{figure}
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
