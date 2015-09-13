@@ -66,7 +66,7 @@
 \section{Introduzione al problema.}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-Consideriamo il seguente sistema, composto dalla Terra, dal Sole e da un corpo in orbita intorno alla Terra. 
+Consideriamo il seguente sistema, composto dalla Terra e da un corpo che le orbita intorno. 
 \vskip 0.5cm
 %\begin{minipage}{.30\textwidth}
 %\centering
@@ -76,26 +76,27 @@ Consideriamo il seguente sistema, composto dalla Terra, dal Sole e da un corpo i
 \textbf{Dati iniziali}
 \begin{itemize}
 \item $n$ istanti $t_1, \dots, t_n$ .
-\item $n$ vettori $\textbf{R}_k$ che rappresentano le posizioni dell'osservatore rispetto al Sole.
+\item $n$ vettori $\textbf{R}_k$ che rappresentano le posizioni dell'osservatore rispetto ad un sistema di riferimento fissato.
 \item $n$ versori $ \hat{\mathbf{\rho}}_1, \dots, \hat{ \rho }_n$, osservati ai tempi $t_1, \dots, t_n$, che indicano la posizione del corpo rispetto alla Terra.
 \end{itemize}
 
 
 %\end{minipage}
 \vskip 0.5cm
-Indicheremo inoltre con $\textbf{r}_k$ le posizioni del corpo rispetto al centro della Terra.
-Lo scopo degli algoritmi presentati \`e quello di trovare le distanze topocentriche $\mathbf \rho_k$. 
 
 
 
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[plain]
+Indicheremo inoltre con $\textbf{r}_k$ le posizioni del corpo rispetto al centro della Terra.
+Lo scopo degli algoritmi presentati \`e quello di trovare le distanze topocentriche $\mathbf \rho_k$. 
+
 I tre vettori soddisfano la relazione
  \begin{equation}
 \textbf{r}_k=\textbf{R}_k+ \rho_k \hat{rho}_k, \quad k=1,\dots, n.
 \end{equation}
-Inoltre, dal momento che l'orbita del corpo giace su un piano \begin{equation}
+Inoltre, dal momento che l'orbita del corpo giace su un piano, vale anche che \begin{equation}
 \textbf{r}_k=c_k \textbf{r}_{k-1} + \textbf{r}_{k+1} \quad k=1,\dots, n
 \end{equation}
 
@@ -203,18 +204,15 @@ Tralasciando le derivate di ordine superiore, l'iterazione diventa \begin{equati
 Il prossimo metodo che andremo a presentare non richiede la costruzione di alcuna derivata.
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[plain]
-\begin{figure}
-\centering
-\includegraphics[width=0.7\textwidth]{guess_region.jpg}
-\end{figure}
-\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Soluzione ai minimi quadrati}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\`E possibile riscrivere le condizioni di coplanarit\`a nella forma matriciale $M \rho =\xi$
+\`E possibile riscrivere le condizioni di coplanarit\`a \begin{equation}
+c_k \rho_{k-1}\hat{\rho}_{k-1}-\rho_{k}\hat{\rho}_{k} +d_k \rho_{k+1}\hat{\rho}_{k+1}=\textbf{R}_k-(c_k\textbf{R}_{k-1}+d_k \textbf{R}_{k+1})
+\end{equation}
+nella forma compatta $M \rho =\xi$:
 \begin{equation*}
 \begin{bmatrix}
 c_2 \hat{\rho}_1 & -\rho_2 & d_2 \hat{\rho}_3 & \mathbf{0} & \mathbf{0}  & \dots & \mathbf{0} \\
@@ -239,17 +237,28 @@ c_2 \hat{\rho}_1 & -\rho_2 & d_2 \hat{\rho}_3 & \mathbf{0} & \mathbf{0}  & \dots
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[plain]
 La soluzione ai minimi quadrati \`e data dalla formula \begin{equation}
-\Delta \rho = -(M^T M)^{-1} M^T \xi
+ \rho= (M^T M)^{-1} M^T \xi
 \end{equation}
-Per trovare il punto fisso della successione si proceder\`a quindi con il metodo delle \emph{correzioni differenziali} \begin{equation}
-\rho_{k+1}= (M^T M)^{-1} M^T \xi_k
+Per trovare il punto fisso della successione si proceder\`a con l'iterazione di punto fisso \begin{equation}
+ \rho^{(i)} = -(M^{(i)T} M^{(i)})^{-1} M^{(i)T} \xi^{(i)}
 \end{equation}
+avente $\rho^{(0)}=\textbf{0}$ come pu
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Esempi e risultati}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 Per controllare l'esattezza e la stabilit\`a del metodo sono stati analizzati quattro diversi casi. \\
+ \begin{itemize}
+\item Satellite equatoriale
+\item Satellite con orbita inclinata di 45 gradi
+\item Satellite con orbita inclinata di 90
+\item Asteroide
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[plain]
 In ognuno di essi il sito d'osservazione \`e posto a latitudine e longitudine nulle. I test sono stati eseguiti seguendo determinati passi: \begin{itemize}
 \item[a)] Sono stati selezionati gli elementi orbitali di un oggetto di tipo LEO. La selezione deve esssere cosistente con la posizione dell'osservatore;
 \item[b)] Dai dati selezionati vengono ottenuti i vettori posizione e velocit\`a iniziali;
@@ -257,24 +266,19 @@ In ognuno di essi il sito d'osservazione \`e posto a latitudine e longitudine nu
 \item[d)] Si calcolano i versori $\hat{\rho}_k$;
 \end{itemize}
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-Per simulare delle osservazioni reali i dati esatti sono stati sporcati con del rumore gaussiano.
-\end{frame}
-%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-L'algiritmo \`e stato testato in quattro diversi casi \begin{itemize}
-\item Satellite equatoriale
-\item Satellite con orbita inclinata di 45 gradi
-\item Satellite con orbita inclinata di 90
-\item Asteroide
-\end{itemize}
-\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+Per simulare delle osservazioni reali l'ascensione retta e la declinazione della direzione del corpo sono state "sporcate" con del rumore gaussiano.
+L'accuratezza dei risultati ottenuti viene valutata in percentuale, confrontando i dati reali con quelli ottenuti:
+\begin{equation}
+err=100*\frac{|r_{true}-r_{est}|}{|r_{true}|}
+\end{equation}
+\end{frame}
 %%%%%%%%%%%%%%%%%%%
 
 
-\begin{frame}
+
+\begin{frame}[plain]
 Faremo adesso vedere che l'accuratezza dei risultati dipende principalmente da tre fattori: \begin{itemize}
 \item L'intervallo di tempo che separa le osservazioni;
 \item Gli errori di misurazione;
@@ -283,45 +287,32 @@ Faremo adesso vedere che l'accuratezza dei risultati dipende principalmente da t
 I test sono stati eseguiti sul secondo caso. \\
 Per studiare l'effetto del rumore la varianza $\sigma$ \`e stata fatta variare da $0$ a $5''$.
 \end{frame}
+%%%%%%%%%%%%%%%%%%%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-Per verificare l'influenza dell'intervallo di tempo \`e stato di nuovo considerato il secondo caso. La varianza del rumore \`e stata fissata a $\sigma=5''$ e l'intervallo di tempo \`e stato fatto variare da $20$ a $120s$.
-In figura si vede come l'incremento dell'intervallo di tempo aumenti l'accuratezza di entrambi i metodi fino ai $60s$. Ma per intervalli pi\`u lunghi $J_n$ risente dell'approssimazione dei coefficienti di Lagrange $f$ e $g$.
+\begin{frame}[plain]
+Per verificare l'influenza dell'intervallo di tempo, la varianza del rumore \`e stata fissata a $\sigma=5''$ e l'intervallo di tempo \`e stato fatto variare da $20$ a $120s$. L'incremento dell'intervallo di tempo aumenti l'accuratezza di entrambi i metodi fino ai $60s$. Ma per intervalli pi\`u lunghi $J_n$ risente dell'approssimazione dei coefficienti di Lagrange $f$ e $g$.
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{error_vs_time.jpg}
+\includegraphics[width=0.5\textwidth]{errore2.png}
 \end{figure}
 \end{frame}
 %%%%%%%%%
 
-\begin{frame}
-
+\begin{frame}[plain]
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{error_vs_noise.jpg}
+\includegraphics[width=0.5\textwidth]{errore_1.png}
+\end{figure}
+
 La figura mostra che per dati molto accurati la soluzione trovata con l'algoritmo $L_n$ \`e molto precisa, mentre quella trovata con $J_n$ non lo \`e. 
+
 Al contrario, quando la varianza \`e superiore a $2''$ i due metodi hanno lo stesso livello di accuratezza.   
-\end{figure}
+Questo \`e dovuto al troncamento al secondo ordine dei coefficienti $c_k$ e $d_k$
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\begin{figure} 
-\centering
-\includegraphics[width=0.5\linewidth]{occorrenze_jn.jpg} 
-\includegraphics[width=0.5\linewidth]{occorrenze_dc.jpg} 
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\begin{figure} 
-\centering
-\includegraphics[width=0.5\linewidth]{occorrenze_positive_jn.jpg} 
-\includegraphics[width=0.5\linewidth]{occorrenze_positive_dc.jpg} 
-\end{figure}
-\end{frame}
 %\begin{frame}
 %Infine l'ultima figura mostra come cambia la performance di $J_n$ al variare delle %condizioni iniziali. \\
 %In questo caso l'intervallo di tempo rimane fisso a $50 s$. 
@@ -331,5 +322,97 @@ Al contrario, quando la varianza \`e superiore a $2''$ i due metodi hanno lo ste
 %\end{figure}
 %\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Esempi e risultati sperimentali}
+\begin{frame}
+Sono stati condotti ulteriori test in MatLab, esguiti nuovamente sul secondo caso, con tre osservazioni. \begin{itemize}
+\item Posizione dell'osservatore: $\textbf{R}_1=[6 378.137, 0, 0]^T$;
+\item Condizioni iniziali: \begin{eqnarray*}
+\textbf{r}_1 &=&[6882.26672, -514.02760,1284.74917 ]^T km \\
+\textbf{v}_1 &= &[-0.5787, 5.7434, 5.3979]^T km/s;
+\end{eqnarray*}
+\end{itemize}
+I coefficienti $c_k$ e $d_k$ sono nella versione approssimata \begin{equation}
+c_k=d_k=\frac{1}{2} \left(1+ \frac{\mu}{2r_k^3} \Delta t^2 \right)
+\end{equation}
+sia in $J_3$ che in $L_3$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+\textbf{Ricerca dei dati iniziali}\begin{itemize}
+\item Si propagano le condizioni iniziali $\textbf{r}_0$ e $\textbf{v}_0$ per ottenere le ossevazioni agli istanti $t_2s$e $t_3$;
+\item Si calcolano i vettori $\textbf{R}_2$ e $\textbf{R}_3$, di coordinate \begin{equation}
+\textbf{R}_2=\begin{pmatrix}
+R_1*cos(\omega t_2) \\
+R_1*sin(\omega t_2) \\
+0
+\end{pmatrix}
+, \qquad \textbf{R}_3=\begin{pmatrix}
+R_1*cos(\omega t_3) \\
+R_1*sin(\omega t_3) \\
+0
+\end{pmatrix}
+\end{equation}  
+dove $w$ \`e l velocit\`a angolare della Terra; 
+\item Si trovano le posizioni relative \begin{equation*}
+\mathbf{\rho}_i=\textbf{r}_i-\textbf{R}_i, \quad i=1,2,3.
+\end{equation*}
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\textbf{Modifica dei dati iniziali:}
+\begin{itemize}
+\item Si calcolano i moduli $(\rho_1, \rho_2, \rho_3)$ versori $\hat{\rho}_1,\hat{\rho}_2,\hat{\rho}_3$;
+\item Si portano i versori in coordinate sferiche $(\alpha_i, \delta_i, 1), \quad i=1,2,3$;
+\item Si modificano le prime due coordinate $(\alpha_i, \delta_i), \quad i=1,2,3$ e si torna in coordinate cartesiane.
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+
+\begin{figure} 
+\centering
+\includegraphics[width=0.5\linewidth]{error_vs_noise.jpg} 
+\end{figure}
+A questo punto si lanciano gli algoritmi $J_3$ e $L_3$ facendo variare il rumore da $0$ a $5''$. \\
+In questo test il vettore di partenza $\rho^{(0)}$ di $J_3$ \`e costituito dai moduli veri.
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+\begin{figure} 
+\centering
+\includegraphics[width=0.5\linewidth]{error_vs_time.jpg} 
+\end{figure}
+Se invece si vuol far variare l'intervallo di tempo $\Delta t$ tra un'osservazione e l'altra, si devono calcolare ogni volta i dati da inserire negli algoritmi.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\begin{figure}
+\includegraphics[width=0.5\linewidth]{occorrenze_positive_jn.jpg} 
+\includegraphics[width=0.5\linewidth]{occorrenze_positive_dc.jpg}
+\end{figure}
+Occorrenze degli errori relativi, eseguito su 2000 prove.
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+\begin{figure} 
+\centering
+\includegraphics[width=0.5\linewidth]{occorrenze_jn.jpg} 
+\includegraphics[width=0.5\linewidth]{occorrenze_dc.jpg} \\
+\end{figure}
+Errore relativo: \begin{equation}
+err=100*\frac{|r_{est}|-|r_{true}|}{|r_{true}|}
+\end{equation}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[plain]
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{guess_region.jpg}
+\end{figure}
+Regione di convergenza di $J_3$.
+\end{frame}
 
 \end{document}
